@@ -1,0 +1,25 @@
+<.header>
+  Listing Faces
+  <:actions>
+    <.link href={~p"/faces/new"}>
+      <.button>New Face</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="faces" rows={@faces} row_click={&JS.navigate(~p"/faces/#{&1}")}>
+  <:col :let={face} label="Name">{face.name}</:col>
+  <:col :let={face} label="Face encoding">{face.face_encoding}</:col>
+  <:col :let={face} label="Checked in">{face.checked_in}</:col>
+  <:action :let={face}>
+    <div class="sr-only">
+      <.link navigate={~p"/faces/#{face}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/faces/#{face}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={face}>
+    <.link href={~p"/faces/#{face}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

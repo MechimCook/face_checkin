@@ -1,0 +1,17 @@
+<.header>
+  Face {@face.id}
+  <:subtitle>This is a face record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/faces/#{@face}/edit"}>
+      <.button>Edit face</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name">{@face.name}</:item>
+  <:item title="Face encoding">{@face.face_encoding}</:item>
+  <:item title="Checked in">{@face.checked_in}</:item>
+</.list>
+
+<.back navigate={~p"/faces"}>Back to faces</.back>

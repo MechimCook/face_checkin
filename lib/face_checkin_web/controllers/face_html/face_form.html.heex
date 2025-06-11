@@ -1,0 +1,11 @@
+<.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:name]} type="text" label="Name" />
+  <.input field={f[:face_encoding]} type="text" label="Face encoding" />
+  <.input field={f[:checked_in]} type="checkbox" label="Checked in" />
+  <:actions>
+    <.button>Save Face</.button>
+  </:actions>
+</.simple_form>

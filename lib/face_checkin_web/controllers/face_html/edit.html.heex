@@ -1,0 +1,8 @@
+<.header>
+  Edit Face {@face.id}
+  <:subtitle>Use this form to manage face records in your database.</:subtitle>
+</.header>
+
+<.face_form changeset={@changeset} action={~p"/faces/#{@face}"} />
+
+<.back navigate={~p"/faces"}>Back to faces</.back>

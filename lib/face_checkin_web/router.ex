@@ -17,6 +17,8 @@ defmodule FaceCheckinWeb.Router do
   scope "/", FaceCheckinWeb do
     pipe_through :browser
 
+    resources "/faces", FaceController
+
     get "/", PageController, :home
   end
 
