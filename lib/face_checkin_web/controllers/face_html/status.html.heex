@@ -1,0 +1,15 @@
+<h1>Check-in Status</h1>
+
+<h2>Checked In</h2>
+<ul>
+  <%= for face <- @checked_in do %>
+    <li><%= face.name %></li>
+  <% end %>
+</ul>
+
+<h2>Checked Out</h2>
+<ul>
+  <%= for face <- @checked_out do %>
+    <li><%= face.name %></li>
+  <% end %>
+</ul>

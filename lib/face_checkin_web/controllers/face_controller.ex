@@ -59,4 +59,12 @@ defmodule FaceCheckinWeb.FaceController do
     |> put_flash(:info, "Face deleted successfully.")
     |> redirect(to: ~p"/faces")
   end
+
+  def status(conn, _params) do
+    {checked_in, checked_out} =
+      Faces.list_faces()
+      |> Enum.split_with(& &1.checked_in)
+
+    render(conn, "status.html", checked_in: checked_in, checked_out: checked_out)
+  end
 end
