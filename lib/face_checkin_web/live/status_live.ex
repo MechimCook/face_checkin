@@ -10,6 +10,7 @@ defmodule FaceCheckinWeb.StatusLive do
       |> assign(:profiles, profiles)
       |> assign(:show_modal, false)
       |> assign(:modal_profile_id, nil)
+      |> assign(:detected_face_img, nil)
     {:ok, socket}
   end
 
@@ -24,7 +25,7 @@ defmodule FaceCheckinWeb.StatusLive do
   end
 
   def handle_event("close_modal", _params, socket) do
-    {:noreply, assign(socket, show_modal: false, modal_profile_id: nil)}
+    {:noreply, assign(socket, show_modal: false, modal_profile_id: nil, detected_face_img: nil)}
   end
 
   def handle_event("save_pic", %{"id" => id}, socket) do
@@ -45,6 +46,37 @@ defmodule FaceCheckinWeb.StatusLive do
   end
 
   def handle_event("validate", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("auto_capture", %{"image" => data_url}, socket) do
+    # Remove the data URL prefix
+    <<_::binary-size(23), base64::binary>> = data_url
+    {:ok, image_binary} = Base.decode64(base64)
+
+    # Save the image to a temp file for Evision
+    tmp_path = Path.join(System.tmp_dir!(), "capture-#{System.unique_integer()}.jpg")
+    File.write!(tmp_path, image_binary)
+
+    # Detect and crop faces
+    faces = FaceCheckin.FacialRecognition.detect_and_crop_faces(tmp_path)
+    IO.inspect(faces, label: "Cropped faces")
+
+    # Use the first detected face, if any
+    face_img =
+      case faces do
+        [first | _] -> Base.encode64(first)
+        _ -> nil
+      end
+
+    show_modal = face_img != nil
+
+    socket =
+      socket
+      |> assign(:show_modal, show_modal)
+      |> assign(:detected_face_img, face_img)
+      |> assign(:modal_profile_id, nil)
+
     {:noreply, socket}
   end
 end

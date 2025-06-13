@@ -55,6 +55,10 @@
     </div>
   </div>
 <% end %>
+<.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" show_modal={@show_modal} />
+<%= if @detected_face_img do %>
+  <img src={"data:image/jpeg;base64,#{@detected_face_img}"} style="display:block; margin: 0 auto 1em auto; border-radius: 1em; max-width: 200px;" alt="Detected face" />
+<% end %>
 <style>
 .switch {
   position: relative;
