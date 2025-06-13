@@ -1,0 +1,75 @@
+<div style="text-align: center;">
+  <h1 style="font-size: 3rem; margin-bottom: 1.5rem;">
+    Office Status
+  </h1>
+  <table style="margin: 0 auto; border-collapse: separate; border-spacing: 0 2em; width: 100%; max-width: 700px;">
+    <tbody>
+      <%= for profile <- @profiles do %>
+        <tr>
+          <td style="padding: 0.5em 0.5em;">
+            <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #eee; margin: 0 auto;">
+              <%= if profile.profile_pic do %>
+                <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
+              <% else %>
+                <span style="color: #aaa;">No Image</span>
+              <% end %>
+            </div>
+          </td>
+          <td style="padding: 0.5em 0.5em; min-width: 150px; vertical-align: middle;">
+            <strong><%= profile.name %></strong>
+          </td>
+          <td style="padding: 0.5em 0.5em; vertical-align: middle;">
+            <label class="switch">
+              <input type="checkbox"
+                     phx-click="toggle_checked_in"
+                     phx-value-id={profile.id}
+                     checked={profile.checked_in} />
+              <span class="slider round"></span>
+            </label>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 40px; 
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 34px; 
+  width: 34px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #1609ff;
+}
+input:checked + .slider:before {
+  transform: translateX(40px); 
+}
+.slider.round {
+  border-radius: 40px;
+}
+</style>
