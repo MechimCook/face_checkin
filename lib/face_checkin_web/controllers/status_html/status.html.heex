@@ -1,0 +1,75 @@
+<h1>Profiles Status</h1>
+<table style="width:100%; border-collapse: separate; border-spacing: 0 1em;">
+  <tbody>
+    <%= for profile <- @profiles do %>
+      <tr>
+        <td>
+          <div style="
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eee;
+          ">
+            <%= if profile.profile_pic do %>
+              <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
+            <% else %>
+              <span style="color: #aaa;">No Image</span>
+            <% end %>
+          </div>
+        </td>
+        <td style="padding-left: 1em;">
+          <strong><%= profile.name %></strong>
+        </td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" disabled checked={profile.checked_in} />
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 40px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 40px; 
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 34px; 
+  width: 34px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #1609ff;
+}
+input:checked + .slider:before {
+  transform: translateX(40px); 
+}
+</style>
