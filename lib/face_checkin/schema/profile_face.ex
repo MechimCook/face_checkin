@@ -12,6 +12,6 @@ defmodule FaceCheckin.ProfileFace do
   def changeset(profile_face, attrs) do
     profile_face
     |> cast(attrs, [:profile_id, :face_pic, :face_id])
-    |> validate_required([:profile_id, :face_id])
+    |> validate_required([:profile_id, :face_pic, :face_id])
   end
 end
