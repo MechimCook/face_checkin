@@ -6,7 +6,7 @@ defmodule FaceCheckin.Faces do
   import Ecto.Query, warn: false
   alias FaceCheckin.Repo
 
-  alias FaceCheckin.Faces.Face
+  alias FaceCheckin.Face
 
   @doc """
   Returns the list of faces.

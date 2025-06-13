@@ -2,7 +2,7 @@ defmodule FaceCheckinWeb.FaceController do
   use FaceCheckinWeb, :controller
 
   alias FaceCheckin.Faces
-  alias FaceCheckin.Faces.Face
+  alias FaceCheckin.Face
 
   def index(conn, _params) do
     faces = Faces.list_faces()

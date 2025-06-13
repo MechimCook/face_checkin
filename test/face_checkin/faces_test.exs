@@ -4,7 +4,7 @@ defmodule FaceCheckin.FacesTest do
   alias FaceCheckin.Faces
 
   describe "faces" do
-    alias FaceCheckin.Faces.Face
+    alias FaceCheckin.Face
 
     import FaceCheckin.FacesFixtures
 
