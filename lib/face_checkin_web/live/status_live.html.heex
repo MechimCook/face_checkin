@@ -7,12 +7,19 @@
       <%= for profile <- @profiles do %>
         <tr>
           <td style="padding: 0.5em 0.5em;">
-            <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #eee; margin: 0 auto;">
-              <%= if profile.profile_pic do %>
-                <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
-              <% else %>
-                <span style="color: #aaa;">No Image</span>
-              <% end %>
+            <div style="display: inline-block;">
+              <div
+                style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #eee; margin: 0 auto; cursor: pointer;"
+                phx-click="open_modal"
+                phx-value-id={profile.id}
+                title="Click to change avatar"
+              >
+                <%= if profile.profile_pic do %>
+                  <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
+                <% else %>
+                  <span style="color: #aaa;">No Image</span>
+                <% end %>
+              </div>
             </div>
           </td>
           <td style="padding: 0.5em 0.5em; min-width: 150px; vertical-align: middle;">
@@ -32,6 +39,22 @@
     </tbody>
   </table>
 </div>
+<%= if @show_modal do %>
+  <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: white; padding: 2em; border-radius: 1em; min-width: 300px; position: relative;">
+      <button phx-click="close_modal" style="position: absolute; top: 0.5em; right: 0.5em;">&times;</button>
+      <h3>Change Avatar</h3>
+      <%= for profile <- @profiles do %>
+        <%= if "#{profile.id}" == @modal_profile_id do %>
+          <form phx-submit="save_pic" phx-change="validate" phx-value-id={profile.id}>
+            <.live_file_input upload={@uploads.avatar} />
+            <button type="submit" style="margin-top: 1em;">Upload</button>
+          </form>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 <style>
 .switch {
   position: relative;
@@ -72,4 +95,6 @@ input:checked + .slider:before {
 .slider.round {
   border-radius: 40px;
 }
+[x-cloak] { display: none !important; }
 </style>
+<script defer src="/js/app.js"></script>
