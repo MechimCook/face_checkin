@@ -9,6 +9,7 @@ defmodule FaceCheckinWeb.StatusLive do
       |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
       |> assign(:profiles, profiles)
       |> assign(:show_modal, false)
+      |> assign(:recog_modal, false)
       |> assign(:modal_profile_id, nil)
       |> assign(:detected_face_img, nil)
     {:ok, socket}
@@ -58,20 +59,39 @@ defmodule FaceCheckinWeb.StatusLive do
 
     faces = FaceCheckin.FacialRecognition.detect_and_crop_faces(tmp_path)
 
-    face_img =
-      case faces do
-        [first | _] -> Base.encode64(first)
-        _ -> nil
-      end
+    case faces do
+      [] ->
+        # No face detected, do nothing
+        {:noreply, socket}
 
-    show_modal = face_img != nil
+      _ ->
+        # Find best match
+        match = FaceCheckin.FacialRecognition.find_best_match(faces)
 
-    socket =
-      socket
-      |> assign(:show_modal, show_modal)
-      |> assign(:detected_face_img, face_img)
-      |> assign(:modal_profile_id, nil)
+        recog_modal =
+          case match do
+            profile_id when is_integer(profile_id) ->
+              profile = FaceCheckin.Profiles.get_profile!(profile_id)
+              %{
+                mode: :match,
+                profile: profile,
+                encoding: "placeholder",
+                image: Base.encode64(List.first(faces))
+              }
+            :no_match ->
+              %{
+                mode: :unknown,
+                encoding: "placeholder",
+                image: Base.encode64(List.first(faces))
+              }
+          end
 
-    {:noreply, socket}
+        socket =
+          socket
+          |> assign(:recog_modal, recog_modal)
+          |> assign(:detected_face_img, recog_modal.image)
+
+        {:noreply, socket}
+    end
   end
 end

@@ -16,13 +16,13 @@ defmodule FaceCheckin.FacialRecognition do
     cascade = Evision.CascadeClassifier.cascadeClassifier(@cascade_path)
     faces = Evision.CascadeClassifier.detectMultiScale(cascade, mat)
 
-    Enum.map(faces, fn {x, y, w, h} ->
+    faces
+    |> Enum.map(fn {x, y, w, h} ->
       face_mat = Evision.Mat.roi(mat, {x, y, w, h})
-      jpeg = case Evision.imencode(".jpg", face_mat) do
-        bin -> bin
+      case Evision.imencode(".jpg", face_mat) do
         bin when is_binary(bin) -> bin
+        _ -> nil
       end
-      jpeg
     end)
   end
 
