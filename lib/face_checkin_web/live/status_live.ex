@@ -13,6 +13,7 @@ defmodule FaceCheckinWeb.StatusLive do
       |> assign(:modal_profile_id, nil)
       |> assign(:detected_face_img, nil)
       |> assign(:pause_auto_capture, false)
+      |> assign(:recog_modal_timer, 5)
     {:ok, socket}
   end
 
@@ -92,17 +93,23 @@ defmodule FaceCheckinWeb.StatusLive do
           |> assign(:recog_modal, recog_modal)
           |> assign(:detected_face_img, recog_modal.image)
           |> assign(:pause_auto_capture, true)
+          |> assign(:recog_modal_timer, 5)
 
         {:noreply, socket}
     end
   end
 
   def handle_event("close_recog_modal", _params, socket) do
-    {:noreply, assign(socket, recog_modal: nil, pause_auto_capture: false)}
+    {:noreply, assign(socket, recog_modal: nil, pause_auto_capture: false, recog_modal_timer: 5)}
   end
 
   def handle_event("toggle_auto_capture_pause", _params, socket) do
     pause = !(socket.assigns[:pause_auto_capture] || false)
     {:noreply, assign(socket, pause_auto_capture: pause)}
+  end
+
+  def handle_event("decrement_recog_modal_timer", _params, socket) do
+    timer = max(socket.assigns.recog_modal_timer - 1, 0)
+    {:noreply, assign(socket, recog_modal_timer: timer)}
   end
 end

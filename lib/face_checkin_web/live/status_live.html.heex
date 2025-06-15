@@ -69,7 +69,9 @@
         <button class="modal-btn" phx-click="add_new_profile" phx-value-encoding={@recog_modal.encoding}>Add as New Profile</button>
         <button class="modal-btn" phx-click="add_to_profile" phx-value-encoding={@recog_modal.encoding}>Add to Existing Profile</button>
       <% end %>
-      <button class="modal-btn" phx-click="close_recog_modal">Close</button>
+      <button class="modal-btn" phx-click="close_recog_modal">
+        Close (<%= @recog_modal_timer %>s)
+      </button>
     </div>
   </div>
 <% end %>

@@ -55,12 +55,16 @@ Hooks.CameraInit = {
 
 Hooks.RecogModalAutoClose = {
   mounted() {
-    this.timer = setTimeout(() => {
+    this.timer = setInterval(() => {
+      this.pushEvent("decrement_recog_modal_timer", {});
+    }, 1000);
+    this.closeTimeout = setTimeout(() => {
       this.pushEvent("close_recog_modal", {});
     }, 5000);
   },
   destroyed() {
-    clearTimeout(this.timer);
+    clearInterval(this.timer);
+    clearTimeout(this.closeTimeout);
   }
 };
 
