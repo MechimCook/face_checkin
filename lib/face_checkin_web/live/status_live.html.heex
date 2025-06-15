@@ -55,11 +55,11 @@
     </div>
   </div>
 <% end %>
-<.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" show_modal={@show_modal} />
+<.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" pause_auto_capture={"#{@pause_auto_capture}"} />
 <%= if @recog_modal do %>
-  <div class="modal-bg">
+  <div id="recog_modal" class="modal-bg" phx-hook="RecogModalAutoClose">
     <div class="modal-content">
-      <img src={"data:image/jpeg;base64,#{@recog_modal.image}"} style="max-width:200px; border-radius:1em;" />
+      <img src={"data:image/jpeg;base64,#{@recog_modal.image}"} style="display: block; margin: 0 auto 1em auto; max-width:200px; border-radius:1em;" />
       <%= if @recog_modal.mode == :match do %>
         <h3>Recognized: <%= @recog_modal.profile.name %></h3>
         <button class="modal-btn" phx-click="toggle_checked_in" phx-value-id={@recog_modal.profile.id}>Toggle Check-in</button>
@@ -73,6 +73,9 @@
     </div>
   </div>
 <% end %>
+<button class="modal-btn pause-btn" phx-click="toggle_auto_capture_pause" style="position: fixed; top: 1em; right: 1em; z-index: 3000;">
+  <%= if @pause_auto_capture, do: "Resume Auto Capture", else: "Pause Auto Capture" %>
+</button>
 <style>
 .switch {
   position: relative;
@@ -142,6 +145,20 @@ input:checked + .slider:before {
   transition: background 0.2s;
 }
 .modal-btn:hover {
+  background: #0d066d;
+}
+.pause-btn {
+  padding: 0.5em 1.2em;
+  font-size: 1em;
+  border-radius: 0.5em;
+  background: #1609ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+}
+.pause-btn:hover {
   background: #0d066d;
 }
 </style>

@@ -39,8 +39,9 @@ Hooks.CameraInit = {
 
     // Auto-capture every 3 seconds, but pause if modal is up
     this.interval = setInterval(() => {
-      const showModal = this.el.getAttribute("data-show-modal") === "true";
-      if (!showModal && video.readyState === 4) {
+      const pauseAutoCapture = this.el.getAttribute("data-pause-auto-capture") === "true";
+      console.log("pauseAutoCapture:", this.el.getAttribute("data-pause-auto-capture"));
+      if (!pauseAutoCapture && video.readyState === 4) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL("image/jpeg");
         this.pushEvent("auto_capture", { image: dataUrl });
@@ -49,6 +50,17 @@ Hooks.CameraInit = {
   },
   destroyed() {
     clearInterval(this.interval);
+  }
+};
+
+Hooks.RecogModalAutoClose = {
+  mounted() {
+    this.timer = setTimeout(() => {
+      this.pushEvent("close_recog_modal", {});
+    }, 5000);
+  },
+  destroyed() {
+    clearTimeout(this.timer);
   }
 };
 
