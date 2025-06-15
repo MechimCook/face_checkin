@@ -56,8 +56,22 @@
   </div>
 <% end %>
 <.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" show_modal={@show_modal} />
-<%= if @detected_face_img do %>
-  <img src={"data:image/jpeg;base64,#{@detected_face_img}"} style="display:block; margin: 0 auto 1em auto; border-radius: 1em; max-width: 200px;" alt="Detected face" />
+<%= if @recog_modal do %>
+  <div class="modal-bg">
+    <div class="modal-content">
+      <img src={"data:image/jpeg;base64,#{@recog_modal.image}"} style="max-width:200px; border-radius:1em;" />
+      <%= if @recog_modal.mode == :match do %>
+        <h3>Recognized: <%= @recog_modal.profile.name %></h3>
+        <button class="modal-btn" phx-click="toggle_checked_in" phx-value-id={@recog_modal.profile.id}>Toggle Check-in</button>
+        <button class="modal-btn" phx-click="not_this_profile" phx-value-encoding={@recog_modal.encoding}>Not this profile</button>
+      <% else %>
+        <h3>Unknown Face</h3>
+        <button class="modal-btn" phx-click="add_new_profile" phx-value-encoding={@recog_modal.encoding}>Add as New Profile</button>
+        <button class="modal-btn" phx-click="add_to_profile" phx-value-encoding={@recog_modal.encoding}>Add to Existing Profile</button>
+      <% end %>
+      <button class="modal-btn" phx-click="close_recog_modal">Close</button>
+    </div>
+  </div>
 <% end %>
 <style>
 .switch {
@@ -100,5 +114,35 @@ input:checked + .slider:before {
   border-radius: 40px;
 }
 [x-cloak] { display: none !important; }
+.modal-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000;
+}
+.modal-content {
+  background: white;
+  padding: 2em;
+  border-radius: 1em;
+  min-width: 300px;
+  position: relative;
+  text-align: center;
+}
+.modal-btn {
+  display: inline-block;
+  margin: 0.5em 0.5em;
+  padding: 0.75em 1.5em;
+  background: #1609ff;
+  color: white;
+  border: none;
+  border-radius: 0.5em;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.modal-btn:hover {
+  background: #0d066d;
+}
 </style>
 <script defer src="/js/app.js"></script>
