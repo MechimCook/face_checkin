@@ -14,6 +14,7 @@ defmodule FaceCheckinWeb.StatusLive do
       |> assign(:detected_face_img, nil)
       |> assign(:pause_auto_capture, false)
       |> assign(:show_add_to_profile_modal, false)
+      |> assign(:show_add_new_profile_modal, false)
       |> assign(:recog_modal_timer, 5)
     {:ok, socket}
   end
@@ -144,5 +145,36 @@ defmodule FaceCheckinWeb.StatusLive do
 
   def handle_event("close_add_to_profile_modal", _params, socket) do
     {:noreply, assign(socket, show_add_to_profile_modal: false, add_encoding: nil)}
+  end
+
+  def handle_event("add_new_profile", %{"encoding" => encoding}, socket) do
+    {:noreply, assign(socket, show_add_new_profile_modal: true, add_encoding: encoding)}
+  end
+
+  def handle_event("close_add_new_profile_modal", _params, socket) do
+    {:noreply, assign(socket, show_add_new_profile_modal: false, add_encoding: nil)}
+  end
+
+  def handle_event("confirm_add_new_profile", %{"name" => name, "encoding" => encoding}, socket) do
+    # Create the profile
+    case FaceCheckin.Profiles.create_profile(%{name: name, checked_in: false}) do
+      {:ok, profile} ->
+        # Create the face for the new profile
+        FaceCheckin.Faces.create_face(%{
+          profile_id: profile.id,
+          encoded_face: encoding
+        })
+
+        # Optionally reload profiles/faces here
+        {:noreply,
+          socket
+          |> assign(:show_add_new_profile_modal, false)
+          |> assign(:add_encoding, nil)
+          |> assign(:profiles, FaceCheckin.Profiles.list_profiles())}
+
+      {:error, changeset} ->
+        # Optionally handle error (e.g., show a flash message)
+        {:noreply, assign(socket, :show_add_new_profile_modal, false)}
+    end
   end
 end

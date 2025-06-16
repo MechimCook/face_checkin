@@ -96,6 +96,19 @@
     </div>
   </div>
 <% end %>
+<%= if @show_add_new_profile_modal do %>
+  <div class="modal-bg">
+    <div class="modal-content">
+      <h3>Add New Profile</h3>
+      <form phx-submit="confirm_add_new_profile">
+        <input type="text" name="name" placeholder="Enter name" required style="margin-bottom: 1em;" />
+        <input type="hidden" name="encoding" value={@add_encoding} />
+        <button class="modal-btn" type="submit">Create Profile</button>
+        <button class="modal-btn" type="button" phx-click="close_add_new_profile_modal">Cancel</button>
+      </form>
+    </div>
+  </div>
+<% end %>
 <button class="modal-btn pause-btn" phx-click="toggle_auto_capture_pause" style="position: fixed; top: 1em; right: 1em; z-index: 3000;">
   <%= if @pause_auto_capture, do: "Resume Auto Capture", else: "Pause Auto Capture" %>
 </button>
