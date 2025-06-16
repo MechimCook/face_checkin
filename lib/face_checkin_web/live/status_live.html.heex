@@ -75,6 +75,27 @@
     </div>
   </div>
 <% end %>
+<%= if @show_add_to_profile_modal do %>
+  <div class="modal-bg">
+    <div class="modal-content">
+      <h3>Select Profile to Add Face</h3>
+      <ul style="list-style: none; padding: 0;">
+        <%= for profile <- @profiles do %>
+          <li style="margin: 1em 0;">
+            <strong><%= profile.name %></strong>
+            <button class="modal-btn"
+                    phx-click="confirm_add_to_profile"
+                    phx-value-profile_id={profile.id}
+                    phx-value-encoding={@add_encoding}>
+              Add to this Profile
+            </button>
+          </li>
+        <% end %>
+      </ul>
+      <button class="modal-btn" phx-click="close_add_to_profile_modal">Cancel</button>
+    </div>
+  </div>
+<% end %>
 <button class="modal-btn pause-btn" phx-click="toggle_auto_capture_pause" style="position: fixed; top: 1em; right: 1em; z-index: 3000;">
   <%= if @pause_auto_capture, do: "Resume Auto Capture", else: "Pause Auto Capture" %>
 </button>

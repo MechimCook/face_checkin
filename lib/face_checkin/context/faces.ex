@@ -26,4 +26,10 @@ defmodule FaceCheckin.Faces do
   def change_face(%Face{} = face, attrs \\ %{}) do
     Face.changeset(face, attrs)
   end
+
+  def list_faces_grouped_by_profile_id do
+    Face
+    |> Repo.all()
+    |> Enum.group_by(& &1.profile_id)
+  end
 end

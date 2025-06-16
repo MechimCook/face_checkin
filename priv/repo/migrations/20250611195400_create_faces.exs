@@ -11,6 +11,7 @@ defmodule FaceCheckin.Repo.Migrations.CreateProfilesFacesTables do
 
     create table(:faces) do
       add :encoded_face, :text, null: false
+      add :profile_id, references(:profiles, on_delete: :nothing)
       timestamps()
     end
 
@@ -21,6 +22,7 @@ defmodule FaceCheckin.Repo.Migrations.CreateProfilesFacesTables do
       timestamps()
     end
 
+    create index(:faces, [:profile_id])
     create index(:profiles_faces, [:profile_id])
     create index(:profiles_faces, [:face_id])
   end

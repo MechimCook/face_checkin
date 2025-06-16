@@ -42,15 +42,22 @@ defmodule FaceCheckin.FacialRecognition do
   def find_best_match([cropped_face | _]) do
     captured_encoding = extract_encoding(cropped_face)
 
+    captured_encoding_str =
+      case captured_encoding do
+        nil -> nil
+        list when is_list(list) -> Enum.join(Enum.map(list, &to_string/1), ",")
+      end
+
     faces_by_profile =
       FaceCheckin.Faces.list_faces_grouped_by_profile_id()
+      |>IO.inspect(label: "Faces grouped by profile")
 
     {best_profile_id, best_score} =
       faces_by_profile
       |> Enum.map(fn {profile_id, faces} ->
         scores =
           Enum.map(faces, fn face ->
-            compare_encodings(captured_encoding, face.encoding)
+            compare_encodings(captured_encoding_str, face.encoded_face)
           end)
 
         {profile_id, Enum.min(scores)}
@@ -58,13 +65,13 @@ defmodule FaceCheckin.FacialRecognition do
       |> Enum.min_by(fn {_id, score} -> score end, fn -> {nil, 1.0} end)
 
     if best_score < @threshold do
-      best_profile_id
+      {captured_encoding_str, best_profile_id}
     else
-      :no_match
+      {captured_encoding_str, :no_match}
     end
   end
 
-  def find_best_match([]), do: :no_match
+  def find_best_match([]), do: {nil, :no_match}
 
   @doc """
   Extracts the facial encoding from the cropped face JPEG image.
@@ -97,9 +104,13 @@ defmodule FaceCheckin.FacialRecognition do
   Placeholder: Compares two encodings using Euclidean distance.
   Replace with real comparison logic later.
   """
+  def compare_encodings(nil, _), do: 1.0
+  def compare_encodings(_, nil), do: 1.0
   def compare_encodings(enc1, enc2) do
-    # Assume both are lists of floats of the same length
+    enc2 = String.split(enc2, ",") |> Enum.map(&String.to_float/1)
     enc1
+    |> String.split(",")
+    |> Enum.map(&String.to_float/1)
     |> Enum.zip(enc2)
     |> Enum.map(fn {a, b} -> :math.pow(a - b, 2) end)
     |> Enum.sum()
