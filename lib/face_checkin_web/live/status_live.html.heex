@@ -93,7 +93,17 @@
           </li>
         <% end %>
       </ul>
-      <button class="modal-btn" phx-click="close_add_to_profile_modal">Cancel</button>
+      <button class="modal-btn"
+              phx-click="add_new_profile"
+              phx-value-encoding={@add_encoding}
+              style="width: 100%; margin-top: 1em;">
+        Create New Profile
+      </button>
+      <button class="modal-btn"
+              phx-click="close_add_to_profile_modal"
+              style="width: 100%; margin-top: 0.5em;">
+        Cancel
+      </button>
     </div>
   </div>
 <% end %>
