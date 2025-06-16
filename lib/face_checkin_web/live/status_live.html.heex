@@ -81,12 +81,13 @@
       <h3>Select Profile to Add Face</h3>
       <ul style="list-style: none; padding: 0;">
         <%= for profile <- @profiles do %>
-          <li style="margin: 1em 0;">
-            <strong><%= profile.name %></strong>
+          <li style="display: flex; align-items: center; justify-content: space-between; margin: 1em 0;">
+            <span style="min-width: 0; flex: 1; text-align: left;"><strong><%= profile.name %></strong></span>
             <button class="modal-btn"
                     phx-click="confirm_add_to_profile"
                     phx-value-profile_id={profile.id}
-                    phx-value-encoding={@add_encoding}>
+                    phx-value-encoding={@add_encoding}
+                    style="margin-left: 1em;">
               Add to this Profile
             </button>
           </li>
