@@ -113,9 +113,38 @@ defmodule FaceCheckinWeb.StatusLive do
   end
 
   def handle_event("decrement_recog_modal_timer", _params, socket) do
-    timer = max(socket.assigns.recog_modal_timer - 1, 0)
-        {:noreply, assign(socket, recog_modal_timer: timer)}
+    if socket.assigns[:show_add_to_profile_modal] or socket.assigns[:show_add_new_profile_modal] do
+      {:noreply, socket}
+    else
+      timer = max(socket.assigns.recog_modal_timer - 1, 0)
+
+      cond do
+        timer > 0 ->
+          {:noreply, assign(socket, recog_modal_timer: timer)}
+
+        socket.assigns.recog_modal &&
+          socket.assigns.recog_modal.mode == :match &&
+          !socket.assigns.recog_modal_rejected ->
+
+          # Auto-toggle check-in
+          profile_id = socket.assigns.recog_modal.profile.id
+          profile = FaceCheckin.Profiles.get_profile!(profile_id)
+          {:ok, _profile} = FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
+
+          {:noreply,
+            socket
+            |> assign(:recog_modal, nil)
+            |> assign(:pause_auto_capture, false)
+            |> assign(:recog_modal_timer, 5)
+            |> assign(:profiles, FaceCheckin.Profiles.list_profiles())
+            |> assign(:recog_modal_rejected, false)
+          }
+
+        true ->
+          {:noreply, assign(socket, recog_modal_timer: timer)}
       end
+    end
+  end
 
   def handle_event("add_to_profile", %{"encoding" => encoding}, socket) do
     {:noreply, assign(socket, show_add_to_profile_modal: true, add_encoding: encoding)}
