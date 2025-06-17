@@ -58,6 +58,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache Mix deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: mix-${{ runner.os }}-${{ hashFiles('mix.lock') }}
+
       - name: Install dependencies
         run: mix deps.get
 
