@@ -52,6 +52,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check Elixir formatting
+        run: mix format --check-formatted
+
       - name: Install dependencies
         run: mix deps.get
 
