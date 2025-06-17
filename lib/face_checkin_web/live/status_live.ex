@@ -4,23 +4,23 @@ defmodule FaceCheckinWeb.StatusLive do
 
   def mount(_params, _session, socket) do
     profiles = Profiles.list_profiles()
+
     {:ok,
-      socket
-      |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
-      |> assign(
-        profiles: profiles,
-        show_modal: false,
-        recog_modal: nil,
-        modal_profile_id: nil,
-        detected_face_img: nil,
-        pause_auto_capture: false,
-        show_add_to_profile_modal: false,
-        show_add_new_profile_modal: false,
-        recog_modal_timer: 5,
-        recog_modal_rejected: false,
-        add_encoding: nil
-      )
-    }
+     socket
+     |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+     |> assign(
+       profiles: profiles,
+       show_modal: false,
+       recog_modal: nil,
+       modal_profile_id: nil,
+       detected_face_img: nil,
+       pause_auto_capture: false,
+       show_add_to_profile_modal: false,
+       show_add_new_profile_modal: false,
+       recog_modal_timer: 5,
+       recog_modal_rejected: false,
+       add_encoding: nil
+     )}
   end
 
   def handle_event("toggle_checked_in", %{"id" => id}, socket) do
@@ -46,9 +46,8 @@ defmodule FaceCheckinWeb.StatusLive do
     end)
 
     {:noreply,
-      socket
-      |> assign(profiles: Profiles.list_profiles(), show_modal: false, modal_profile_id: nil)
-    }
+     socket
+     |> assign(profiles: Profiles.list_profiles(), show_modal: false, modal_profile_id: nil)}
   end
 
   def handle_event("validate", _params, socket), do: {:noreply, socket}
@@ -73,12 +72,14 @@ defmodule FaceCheckinWeb.StatusLive do
           case match do
             profile_id when is_integer(profile_id) ->
               profile = FaceCheckin.Profiles.get_profile!(profile_id)
+
               %{
                 mode: :match,
                 profile: profile,
                 encoding: captured_encoding,
                 image: Base.encode64(List.first(faces))
               }
+
             :no_match ->
               %{
                 mode: :unknown,
@@ -88,15 +89,14 @@ defmodule FaceCheckinWeb.StatusLive do
           end
 
         {:noreply,
-          socket
-          |> assign(
-            recog_modal: recog_modal,
-            detected_face_img: recog_modal.image,
-            pause_auto_capture: true,
-            recog_modal_timer: 5,
-            recog_modal_rejected: false
-          )
-        }
+         socket
+         |> assign(
+           recog_modal: recog_modal,
+           detected_face_img: recog_modal.image,
+           pause_auto_capture: true,
+           recog_modal_timer: 5,
+           recog_modal_rejected: false
+         )}
     end
   end
 
@@ -121,22 +121,22 @@ defmodule FaceCheckinWeb.StatusLive do
 
         socket.assigns.recog_modal &&
           socket.assigns.recog_modal.mode == :match &&
-          !socket.assigns.recog_modal_rejected ->
-
+            !socket.assigns.recog_modal_rejected ->
           profile_id = socket.assigns.recog_modal.profile.id
           profile = FaceCheckin.Profiles.get_profile!(profile_id)
-          {:ok, _profile} = FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
+
+          {:ok, _profile} =
+            FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
 
           {:noreply,
-            socket
-            |> assign(
-              recog_modal: nil,
-              pause_auto_capture: false,
-              recog_modal_timer: 5,
-              profiles: FaceCheckin.Profiles.list_profiles(),
-              recog_modal_rejected: false
-            )
-          }
+           socket
+           |> assign(
+             recog_modal: nil,
+             pause_auto_capture: false,
+             recog_modal_timer: 5,
+             profiles: FaceCheckin.Profiles.list_profiles(),
+             recog_modal_rejected: false
+           )}
 
         true ->
           {:noreply, assign(socket, recog_modal_timer: timer)}
@@ -148,22 +148,27 @@ defmodule FaceCheckinWeb.StatusLive do
     {:noreply, assign(socket, show_add_to_profile_modal: true, add_encoding: encoding)}
   end
 
-  def handle_event("confirm_add_to_profile", %{"profile_id" => profile_id, "encoding" => encoding}, socket) do
+  def handle_event(
+        "confirm_add_to_profile",
+        %{"profile_id" => profile_id, "encoding" => encoding},
+        socket
+      ) do
     attrs = %{profile_id: profile_id, encoded_face: encoding}
 
     case FaceCheckin.Faces.create_face(attrs) do
       {:ok, _face} ->
         profile = FaceCheckin.Profiles.get_profile!(profile_id)
-        {:ok, _profile} = FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
+
+        {:ok, _profile} =
+          FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
 
         {:noreply,
-          socket
-          |> assign(
-            show_add_to_profile_modal: false,
-            add_encoding: nil,
-            profiles: FaceCheckin.Profiles.list_profiles()
-          )
-        }
+         socket
+         |> assign(
+           show_add_to_profile_modal: false,
+           add_encoding: nil,
+           profiles: FaceCheckin.Profiles.list_profiles()
+         )}
 
       {:error, _changeset} ->
         {:noreply, assign(socket, show_add_to_profile_modal: false)}
@@ -171,7 +176,12 @@ defmodule FaceCheckinWeb.StatusLive do
   end
 
   def handle_event("close_add_to_profile_modal", _params, socket) do
-    {:noreply, assign(socket, show_add_to_profile_modal: false, add_encoding: nil, pause_auto_capture: false)}
+    {:noreply,
+     assign(socket,
+       show_add_to_profile_modal: false,
+       add_encoding: nil,
+       pause_auto_capture: false
+     )}
   end
 
   def handle_event("add_new_profile", %{"encoding" => encoding}, socket) do
@@ -191,13 +201,12 @@ defmodule FaceCheckinWeb.StatusLive do
         })
 
         {:noreply,
-          socket
-          |> assign(
-            show_add_new_profile_modal: false,
-            add_encoding: nil,
-            profiles: FaceCheckin.Profiles.list_profiles()
-          )
-        }
+         socket
+         |> assign(
+           show_add_new_profile_modal: false,
+           add_encoding: nil,
+           profiles: FaceCheckin.Profiles.list_profiles()
+         )}
 
       {:error, _changeset} ->
         {:noreply, assign(socket, show_add_new_profile_modal: false)}
@@ -206,13 +215,12 @@ defmodule FaceCheckinWeb.StatusLive do
 
   def handle_event("not_this_profile", %{"encoding" => encoding}, socket) do
     {:noreply,
-      socket
-      |> assign(
-        recog_modal: nil,
-        show_add_to_profile_modal: true,
-        add_encoding: encoding,
-        pause_auto_capture: true
-      )
-    }
+     socket
+     |> assign(
+       recog_modal: nil,
+       show_add_to_profile_modal: true,
+       add_encoding: encoding,
+       pause_auto_capture: true
+     )}
   end
 end

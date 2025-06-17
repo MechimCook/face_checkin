@@ -4,8 +4,8 @@ defmodule FaceCheckin.ProfilesTest do
   alias FaceCheckin.Profiles
   alias FaceCheckin.Profile
 
-  @valid_attrs %{name: "Alice", profile_pic: <<1,2,3>>, checked_in: true}
-  @update_attrs %{name: "Bob", profile_pic: <<4,5,6>>, checked_in: false}
+  @valid_attrs %{name: "Alice", profile_pic: <<1, 2, 3>>, checked_in: true}
+  @update_attrs %{name: "Bob", profile_pic: <<4, 5, 6>>, checked_in: false}
   @invalid_attrs %{name: nil, profile_pic: nil, checked_in: nil}
 
   test "list_profiles/0 returns all profiles" do
@@ -21,7 +21,7 @@ defmodule FaceCheckin.ProfilesTest do
   test "create_profile/1 with valid data creates a profile" do
     assert {:ok, %Profile{} = profile} = Profiles.create_profile(@valid_attrs)
     assert profile.name == "Alice"
-    assert profile.profile_pic == <<1,2,3>>
+    assert profile.profile_pic == <<1, 2, 3>>
     assert profile.checked_in == true
   end
 
@@ -33,7 +33,7 @@ defmodule FaceCheckin.ProfilesTest do
     {:ok, profile} = Profiles.create_profile(@valid_attrs)
     assert {:ok, %Profile{} = profile} = Profiles.update_profile(profile, @update_attrs)
     assert profile.name == "Bob"
-    assert profile.profile_pic == <<4,5,6>>
+    assert profile.profile_pic == <<4, 5, 6>>
     assert profile.checked_in == false
   end
 

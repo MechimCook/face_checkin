@@ -15,14 +15,17 @@
             background: #eee;
           ">
             <%= if profile.profile_pic do %>
-              <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
+              <img
+                src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"}
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
             <% else %>
               <span style="color: #aaa;">No Image</span>
             <% end %>
           </div>
         </td>
         <td style="padding-left: 1em;">
-          <strong><%= profile.name %></strong>
+          <strong>{profile.name}</strong>
         </td>
         <td>
           <label class="switch">
@@ -38,40 +41,40 @@
 <.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" />
 
 <style>
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 80px;
-  height: 40px;
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 40px; 
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 34px; 
-  width: 34px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: #1609ff;
-}
-input:checked + .slider:before {
-  transform: translateX(40px); 
-}
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 40px; 
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 34px; 
+    width: 34px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #1609ff;
+  }
+  input:checked + .slider:before {
+    transform: translateX(40px); 
+  }
 </style>

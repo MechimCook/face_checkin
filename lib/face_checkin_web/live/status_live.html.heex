@@ -15,7 +15,10 @@
                 title="Click to change avatar"
               >
                 <%= if profile.profile_pic do %>
-                  <img src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"} style="width: 100%; height: 100%; object-fit: cover;" />
+                  <img
+                    src={"data:image/jpeg;base64,#{Base.encode64(profile.profile_pic)}"}
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                  />
                 <% else %>
                   <span style="color: #aaa;">No Image</span>
                 <% end %>
@@ -23,14 +26,16 @@
             </div>
           </td>
           <td style="padding: 0.5em 0.5em; min-width: 150px; vertical-align: middle;">
-            <strong><%= profile.name %></strong>
+            <strong>{profile.name}</strong>
           </td>
           <td style="padding: 0.5em 0.5em; vertical-align: middle;">
             <label class="switch">
-              <input type="checkbox"
-                     phx-click="toggle_checked_in"
-                     phx-value-id={profile.id}
-                     checked={profile.checked_in} />
+              <input
+                type="checkbox"
+                phx-click="toggle_checked_in"
+                phx-value-id={profile.id}
+                checked={profile.checked_in}
+              />
               <span class="slider round"></span>
             </label>
           </td>
@@ -42,7 +47,9 @@
 <%= if @show_modal do %>
   <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
     <div style="background: white; padding: 2em; border-radius: 1em; min-width: 300px; position: relative;">
-      <button phx-click="close_modal" style="position: absolute; top: 0.5em; right: 0.5em;">&times;</button>
+      <button phx-click="close_modal" style="position: absolute; top: 0.5em; right: 0.5em;">
+        &times;
+      </button>
       <h3>Change Avatar</h3>
       <%= for profile <- @profiles do %>
         <%= if "#{profile.id}" == @modal_profile_id do %>
@@ -55,22 +62,53 @@
     </div>
   </div>
 <% end %>
-<.live_component module={FaceCheckinWeb.CameraFeedComponent} id="camera" pause_auto_capture={"#{@pause_auto_capture}"} />
+<.live_component
+  module={FaceCheckinWeb.CameraFeedComponent}
+  id="camera"
+  pause_auto_capture={"#{@pause_auto_capture}"}
+/>
 <%= if @recog_modal do %>
   <div id="recog_modal" class="modal-bg" phx-hook="RecogModalAutoClose">
     <div class="modal-content">
-      <img src={"data:image/jpeg;base64,#{@recog_modal.image}"} style="display: block; margin: 0 auto 1em auto; max-width:200px; border-radius:1em;" />
+      <img
+        src={"data:image/jpeg;base64,#{@recog_modal.image}"}
+        style="display: block; margin: 0 auto 1em auto; max-width:200px; border-radius:1em;"
+      />
       <%= if @recog_modal.mode == :match do %>
-        <h3>Recognized: <%= @recog_modal.profile.name %></h3>
-        <button class="modal-btn" phx-click="toggle_checked_in" phx-value-id={@recog_modal.profile.id}>Toggle Check-in</button>
-        <button class="modal-btn" phx-click="not_this_profile" phx-value-encoding={@recog_modal.encoding}>Not this profile</button>
+        <h3>Recognized: {@recog_modal.profile.name}</h3>
+        <button
+          class="modal-btn"
+          phx-click="toggle_checked_in"
+          phx-value-id={@recog_modal.profile.id}
+        >
+          Toggle Check-in
+        </button>
+        <button
+          class="modal-btn"
+          phx-click="not_this_profile"
+          phx-value-encoding={@recog_modal.encoding}
+        >
+          Not this profile
+        </button>
       <% else %>
         <h3>Unknown Face</h3>
-        <button class="modal-btn" phx-click="add_new_profile" phx-value-encoding={@recog_modal.encoding}>Add as New Profile</button>
-        <button class="modal-btn" phx-click="add_to_profile" phx-value-encoding={@recog_modal.encoding}>Add to Existing Profile</button>
+        <button
+          class="modal-btn"
+          phx-click="add_new_profile"
+          phx-value-encoding={@recog_modal.encoding}
+        >
+          Add as New Profile
+        </button>
+        <button
+          class="modal-btn"
+          phx-click="add_to_profile"
+          phx-value-encoding={@recog_modal.encoding}
+        >
+          Add to Existing Profile
+        </button>
       <% end %>
       <button class="modal-btn" phx-click="close_recog_modal">
-        Close (<%= @recog_modal_timer %>s)
+        Close ({@recog_modal_timer}s)
       </button>
     </div>
   </div>
@@ -82,26 +120,34 @@
       <ul style="list-style: none; padding: 0;">
         <%= for profile <- @profiles do %>
           <li style="display: flex; align-items: center; justify-content: space-between; margin: 1em 0;">
-            <span style="min-width: 0; flex: 1; text-align: left;"><strong><%= profile.name %></strong></span>
-            <button class="modal-btn"
-                    phx-click="confirm_add_to_profile"
-                    phx-value-profile_id={profile.id}
-                    phx-value-encoding={@add_encoding}
-                    style="margin-left: 1em;">
+            <span style="min-width: 0; flex: 1; text-align: left;">
+              <strong>{profile.name}</strong>
+            </span>
+            <button
+              class="modal-btn"
+              phx-click="confirm_add_to_profile"
+              phx-value-profile_id={profile.id}
+              phx-value-encoding={@add_encoding}
+              style="margin-left: 1em;"
+            >
               Add to this Profile
             </button>
           </li>
         <% end %>
       </ul>
-      <button class="modal-btn"
-              phx-click="add_new_profile"
-              phx-value-encoding={@add_encoding}
-              style="width: 100%; margin-top: 1em;">
+      <button
+        class="modal-btn"
+        phx-click="add_new_profile"
+        phx-value-encoding={@add_encoding}
+        style="width: 100%; margin-top: 1em;"
+      >
         Create New Profile
       </button>
-      <button class="modal-btn"
-              phx-click="close_add_to_profile_modal"
-              style="width: 100%; margin-top: 0.5em;">
+      <button
+        class="modal-btn"
+        phx-click="close_add_to_profile_modal"
+        style="width: 100%; margin-top: 0.5em;"
+      >
         Cancel
       </button>
     </div>
@@ -112,101 +158,114 @@
     <div class="modal-content">
       <h3>Add New Profile</h3>
       <form phx-submit="confirm_add_new_profile">
-        <input type="text" name="name" placeholder="Enter name" required style="margin-bottom: 1em;" />
+        <input
+          type="text"
+          name="name"
+          placeholder="Enter name"
+          required
+          style="margin-bottom: 1em;"
+        />
         <input type="hidden" name="encoding" value={@add_encoding} />
         <button class="modal-btn" type="submit">Create Profile</button>
-        <button class="modal-btn" type="button" phx-click="close_add_new_profile_modal">Cancel</button>
+        <button class="modal-btn" type="button" phx-click="close_add_new_profile_modal">
+          Cancel
+        </button>
       </form>
     </div>
   </div>
 <% end %>
-<button class="modal-btn pause-btn" phx-click="toggle_auto_capture_pause" style="position: fixed; top: 1em; right: 1em; z-index: 3000;">
-  <%= if @pause_auto_capture, do: "Resume Auto Capture", else: "Pause Auto Capture" %>
+<button
+  class="modal-btn pause-btn"
+  phx-click="toggle_auto_capture_pause"
+  style="position: fixed; top: 1em; right: 1em; z-index: 3000;"
+>
+  {if @pause_auto_capture, do: "Resume Auto Capture", else: "Pause Auto Capture"}
 </button>
 <style>
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 80px;
-  height: 40px;
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 40px; 
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 34px; 
-  width: 34px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: #1609ff;
-}
-input:checked + .slider:before {
-  transform: translateX(40px); 
-}
-.slider.round {
-  border-radius: 40px;
-}
-[x-cloak] { display: none !important; }
-.modal-bg {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 2000;
-}
-.modal-content {
-  background: white;
-  padding: 2em;
-  border-radius: 1em;
-  min-width: 300px;
-  position: relative;
-  text-align: center;
-}
-.modal-btn {
-  display: inline-block;
-  margin: 0.5em 0.5em;
-  padding: 0.75em 1.5em;
-  background: #1609ff;
-  color: white;
-  border: none;
-  border-radius: 0.5em;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.modal-btn:hover {
-  background: #0d066d;
-}
-.pause-btn {
-  padding: 0.5em 1.2em;
-  font-size: 1em;
-  border-radius: 0.5em;
-  background: #1609ff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  transition: background 0.2s;
-}
-.pause-btn:hover {
-  background: #0d066d;
-}
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 40px; 
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 34px; 
+    width: 34px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #1609ff;
+  }
+  input:checked + .slider:before {
+    transform: translateX(40px); 
+  }
+  .slider.round {
+    border-radius: 40px;
+  }
+  [x-cloak] { display: none !important; }
+  .modal-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000;
+  }
+  .modal-content {
+    background: white;
+    padding: 2em;
+    border-radius: 1em;
+    min-width: 300px;
+    position: relative;
+    text-align: center;
+  }
+  .modal-btn {
+    display: inline-block;
+    margin: 0.5em 0.5em;
+    padding: 0.75em 1.5em;
+    background: #1609ff;
+    color: white;
+    border: none;
+    border-radius: 0.5em;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .modal-btn:hover {
+    background: #0d066d;
+  }
+  .pause-btn {
+    padding: 0.5em 1.2em;
+    font-size: 1em;
+    border-radius: 0.5em;
+    background: #1609ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+  }
+  .pause-btn:hover {
+    background: #0d066d;
+  }
 </style>
-<script defer src="/js/app.js"></script>
+<script defer src="/js/app.js">
+</script>

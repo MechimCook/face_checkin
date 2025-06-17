@@ -5,9 +5,9 @@ defmodule FaceCheckin.FacialRecognition do
   @threshold 0.6
 
   @cascade_path Path.join([
-    :code.priv_dir(:evision),
-    "share/opencv4/haarcascades/haarcascade_frontalface_default.xml"
-  ])
+                  :code.priv_dir(:evision),
+                  "share/opencv4/haarcascades/haarcascade_frontalface_default.xml"
+                ])
 
   @doc """
   Detects faces in the given image path and returns a list of cropped face images as binaries.
@@ -20,6 +20,7 @@ defmodule FaceCheckin.FacialRecognition do
     faces
     |> Enum.map(fn {x, y, w, h} ->
       face_mat = Evision.Mat.roi(mat, {x, y, w, h})
+
       case Evision.imencode(".jpg", face_mat) do
         bin when is_binary(bin) -> bin
         _ -> nil
@@ -50,7 +51,7 @@ defmodule FaceCheckin.FacialRecognition do
 
     faces_by_profile =
       FaceCheckin.Faces.list_faces_grouped_by_profile_id()
-      |>IO.inspect(label: "Faces grouped by profile")
+      |> IO.inspect(label: "Faces grouped by profile")
 
     {best_profile_id, best_score} =
       faces_by_profile
@@ -89,7 +90,9 @@ defmodule FaceCheckin.FacialRecognition do
       output
       |> String.trim()
       |> case do
-        "" -> nil
+        "" ->
+          nil
+
         csv ->
           try do
             csv |> String.split(",") |> Enum.map(&String.to_float/1)
@@ -106,8 +109,10 @@ defmodule FaceCheckin.FacialRecognition do
   """
   def compare_encodings(nil, _), do: 1.0
   def compare_encodings(_, nil), do: 1.0
+
   def compare_encodings(enc1, enc2) do
     enc2 = String.split(enc2, ",") |> Enum.map(&String.to_float/1)
+
     enc1
     |> String.split(",")
     |> Enum.map(&String.to_float/1)

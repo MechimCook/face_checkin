@@ -5,7 +5,9 @@ defmodule FaceCheckin.FacesTest do
   alias FaceCheckin.Face
 
   setup do
-    {:ok, profile} = FaceCheckin.Profiles.create_profile(%{id: 1, name: "Test", checked_in: false})
+    {:ok, profile} =
+      FaceCheckin.Profiles.create_profile(%{id: 1, name: "Test", checked_in: false})
+
     %{profile: profile}
   end
 
