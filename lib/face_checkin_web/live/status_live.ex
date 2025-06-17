@@ -165,7 +165,7 @@ defmodule FaceCheckinWeb.StatusLive do
           )
         }
 
-      {:error, changeset} ->
+      {:error, _changeset} ->
         {:noreply, assign(socket, show_add_to_profile_modal: false)}
     end
   end
