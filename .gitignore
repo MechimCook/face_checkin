@@ -35,3 +35,14 @@ face_checkin-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Python virtual environment
+/venv312/
+.venv/
+venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
