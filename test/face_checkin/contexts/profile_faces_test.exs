@@ -6,13 +6,13 @@ defmodule FaceCheckin.ProfileFacesTest do
 
   setup do
     {:ok, profile} = FaceCheckin.Profiles.create_profile(%{name: "Test", checked_in: true})
-    {:ok, face} = FaceCheckin.Faces.create_face(%{encoded_face: "abc"})
+    {:ok, face} = FaceCheckin.Faces.create_face(%{encoded_face: "abc", profile_id: profile.id})
     %{profile: profile, face: face}
   end
 
   @valid_attrs %{face_pic: <<1,2,3>>}
   @update_attrs %{face_pic: <<4,5,6>>}
-  @invalid_attrs %{face_pic: nil}
+  @invalid_attrs %{face_pic: nil, profile_id: nil, face_id: nil}
 
   test "list_profile_faces/0 returns all profile_faces", %{profile: profile, face: face} do
     {:ok, pf} = ProfileFaces.create_profile_face(Map.merge(@valid_attrs, %{profile_id: profile.id, face_id: face.id}))
@@ -32,8 +32,9 @@ defmodule FaceCheckin.ProfileFacesTest do
     assert pf.face_id == face.id
   end
 
-  test "create_profile_face/1 with invalid data returns error changeset" do
-    assert {:error, %Ecto.Changeset{}} = ProfileFaces.create_profile_face(@invalid_attrs)
+  test "create_profile_face/1 with invalid data returns error changeset", %{profile: profile, face: face} do
+    attrs = Map.merge(@invalid_attrs, %{profile_id: profile.id, face_id: face.id})
+    assert {:error, %Ecto.Changeset{}} = ProfileFaces.create_profile_face(attrs)
   end
 
   test "update_profile_face/2 with valid data updates the profile_face", %{profile: profile, face: face} do
