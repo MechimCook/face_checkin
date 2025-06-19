@@ -78,7 +78,7 @@ defmodule FaceCheckin.MixProject do
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing",
-        "cmd python3.12 -m venv venv312",
+        "cmd python3.11 -m venv venv311",
         "cmd ./venv312/bin/pip install -r assets/requirements.txt"
       ],
       "assets.build": ["tailwind face_checkin", "esbuild face_checkin"],

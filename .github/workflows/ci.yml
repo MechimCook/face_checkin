@@ -43,15 +43,15 @@ jobs:
           path: venv312
           key: venv312-${{ runner.os }}-${{ hashFiles('assets/requirements.txt') }}
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Install Python dependencies
         run: |
-          python3.12 -m venv venv312
-          ./venv312/bin/pip install -r assets/requirements.txt
+          python3.11 -m venv venv311
+          ./venv311/bin/pip install -r assets/requirements.txt
 
       - name: Install Node.js
         uses: actions/setup-node@v4
