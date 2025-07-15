@@ -148,6 +148,11 @@ defmodule FaceCheckinWeb.StatusLive do
     {:noreply, assign(socket, show_add_to_profile_modal: true, add_encoding: encoding)}
   end
 
+  def handle_event("add_to_profile", params, socket) do
+    IO.inspect(params, label: "Unexpected add_to_profile params")
+    {:noreply, socket}
+  end
+
   def handle_event(
         "confirm_add_to_profile",
         %{"profile_id" => profile_id, "encoding" => encoding},

@@ -21,4 +21,11 @@ defmodule FaceCheckinWeb.StatusLiveTest do
     render_click(element(view, "button[phx-click=\"toggle_auto_capture_pause\"]"))
     assert render(view) =~ "Resume Auto Capture"
   end
+
+  test "add_to_profile with unexpected params does not crash", %{conn: conn} do
+    {:ok, view, _html} = live(conn, "/")
+    render_click(view, :add_to_profile, %{"value" => ""})
+    refute has_element?(view, "[data-test=add-to-profile-modal]")
+    refute render(view) =~ "encoding"
+  end
 end
