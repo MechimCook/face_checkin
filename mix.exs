@@ -59,7 +59,8 @@ defmodule FaceCheckin.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:evision, "~> 0.2"}
+      {:evision, "~> 0.2"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 
