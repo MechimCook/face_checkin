@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: face_checkin_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MIX_ENV: dev
+      DATABASE_URL: ecto://postgres:postgres@db/face_checkin_dev
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - deps:/app/deps
+      - _build:/app/_build
+
+volumes:
+  db_data:
+  deps:
+  _build:
