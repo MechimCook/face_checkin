@@ -24,9 +24,31 @@ defmodule FaceCheckinWeb.StatusLive do
   end
 
   def handle_event("toggle_checked_in", %{"id" => id}, socket) do
-    profile = Profiles.get_profile!(id)
-    {:ok, _} = Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
-    {:noreply, assign(socket, profiles: Profiles.list_profiles())}
+    profile = FaceCheckin.Profiles.get_profile!(id)
+    with {:ok, updated_profile} <- FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in}),
+         {:ok, face} <- FaceCheckin.Faces.create_face(%{
+           profile_id: updated_profile.id,
+           encoded_face: socket.assigns.recog_modal[:encoding]
+         }),
+         {:ok, _profile_face} <- FaceCheckin.ProfileFaces.create_profile_face(%{
+           profile_id: updated_profile.id,
+           face_id: face.id,
+           face_pic: socket.assigns[:detected_face_img]
+         }) do
+      {:noreply,
+       socket
+       |> assign(
+         profiles: FaceCheckin.Profiles.list_profiles(),
+         recog_modal: nil,
+         pause_auto_capture: false,
+         recog_modal_timer: 5,
+         recog_modal_rejected: false
+       )}
+    else
+      error ->
+        IO.inspect(error, label: "toggle_checked_in error")
+        {:noreply, socket}
+    end
   end
 
   def handle_event("open_modal", %{"id" => id}, socket) do
