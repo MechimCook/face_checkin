@@ -1,6 +1,7 @@
 defmodule FaceCheckinWeb.StatusLive do
   use Phoenix.LiveView
   alias FaceCheckin.Profiles
+  alias FaceCheckin.ProfileFaces
 
   def mount(_params, _session, socket) do
     profiles = Profiles.list_profiles()
