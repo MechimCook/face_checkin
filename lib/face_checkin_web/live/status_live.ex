@@ -181,25 +181,25 @@ defmodule FaceCheckinWeb.StatusLive do
         %{"profile_id" => profile_id, "encoding" => encoding},
         socket
       ) do
-    attrs = %{profile_id: profile_id, encoded_face: encoding}
+    attrs = %{
+      profile_id: profile_id,
+      encoded_face: encoding,
+      face_pic: socket.assigns[:detected_face_img]
+    }
 
-    case FaceCheckin.Faces.create_face(attrs) do
-      {:ok, _face} ->
-        profile = FaceCheckin.Profiles.get_profile!(profile_id)
-
-        {:ok, _profile} =
-          FaceCheckin.Profiles.update_profile(profile, %{checked_in: !profile.checked_in})
-
+    case ProfileFaces.create_face_and_profile_face(attrs) do
+      {:ok, _result} ->
         {:noreply,
          socket
          |> assign(
            show_add_to_profile_modal: false,
-           add_encoding: nil,
            profiles: FaceCheckin.Profiles.list_profiles()
          )}
+         |>IO.inspect()
 
-      {:error, _changeset} ->
-        {:noreply, assign(socket, show_add_to_profile_modal: false)}
+      {:error, _step, _reason, _changes} = error ->
+        IO.inspect(error)
+        {:noreply, socket}
     end
   end
 

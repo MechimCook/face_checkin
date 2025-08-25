@@ -5,8 +5,10 @@ defmodule FaceCheckinWeb.FaceController do
   alias FaceCheckin.Face
 
   def index(conn, _params) do
-    faces = Faces.list_faces()
-    render(conn, :index, faces: faces)
+    profiles_with_faces = FaceCheckin.ProfileFaces.list_profile_faces_with_name_and_pic
+    |> IO.inspect(label: "Profiles with Faces")
+
+    render(conn, :index, profiles_with_faces: profiles_with_faces)
   end
 
   def new(conn, _params) do
