@@ -7,20 +7,27 @@
   </:actions>
 </.header>
 
-<.table id="faces" rows={@profiles_with_faces}>
-  <:col :let={face} label="Profile Name">{face.profile_name}</:col>
-  <:col :let={face} label="Face Picture">
-    <%= if face.face_pic do %>
-      <img src={"data:image/jpeg;base64,#{face.face_pic}"} width="80" height="80" />
-    <% else %>
-      No Image
+<table id="faces">
+  <thead>
+    <tr>
+      <th>Profile Name</th>
+      <th>Face Pictures</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for profile <- @profiles_with_faces do %>
+      <tr>
+        <td><%= profile.profile_name %></td>
+        <td>
+          <%= if profile.face_pics == [] do %>
+            No Images
+          <% else %>
+            <%= for pic <- profile.face_pics do %>
+              <img src={"data:image/jpeg;base64,#{pic}"} width="80" height="80" style="margin-right: 0.5em;" />
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
     <% end %>
-  </:col>
-  <%!-- <:action :let={face}>
-    <%= if face.face_id do %>
-      <.link navigate={~p"/faces/#{face.face_id}"}>Show</.link>
-      <.link navigate={~p"/faces/#{face.face_id}/edit"}>Edit</.link>
-      <.link href={~p"/faces/#{face.face_id}"} method="delete" data-confirm="Are you sure?">Delete</.link>
-    <% end %>
-  </:action> --%>
-</.table>
+  </tbody>
+</table>

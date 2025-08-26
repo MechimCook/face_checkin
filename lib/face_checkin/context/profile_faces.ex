@@ -30,9 +30,13 @@ defmodule FaceCheckin.ProfileFaces do
   end
 
   def list_profile_faces_with_name_and_pic do
-    from(pf in ProfileFace,
-      join: p in assoc(pf, :profile),
-      select: %{profile_name: p.name, face_pic: pf.face_pic}
+    from(p in FaceCheckin.Profile,
+      left_join: pf in assoc(p, :profiles_faces),
+      group_by: [p.id, p.name],
+      select: %{
+        profile_name: p.name,
+        face_pics: fragment("array_remove(array_agg(?), NULL)", pf.face_pic)
+      }
     )
     |> FaceCheckin.Repo.all()
   end
